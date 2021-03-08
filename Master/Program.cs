@@ -32,31 +32,41 @@ namespace Master
 
                 //Read the Desctionary
                 List<List<string>> chunks = new List<List<string>>();
-
+                int num=1;
+                List<string> tempList = new List<string>();
                 using (FileStream fs = new FileStream("webster-dictionary.txt", FileMode.Open, FileAccess.Read))
+                
 
                 using (StreamReader dictionary = new StreamReader(fs))
                 {
                     while (!dictionary.EndOfStream)
                     {
-                        List<string> tempList = new List<string>();
 
                         //if you want to send chunks to the client then create chunks
                         //You must use a logic where it puts 10000 dictinary words in tempList and then
                         //Adds tempList to chucks
                         tempList.Add(dictionary.ReadLine());
+                        if (tempList.Count == 10000)
+                        {
+                            chunks.Add(tempList);
+                            tempList.Clear();
+                            num++;
+                        }
                         //after the modulus % condition is satisfied i.e. when there is 10000 words in tempList
                         //then
-                        chunks.Add(tempList);
 
                         // IEnumerable<UserInfoClearText> partialResult = CheckWordWithVariations(dictionaryEntry, userInfos);
                         // result.AddRange(partialResult);
                     }
+                
                 }
+                ns.Close();
+                connectionSocket.Close();
+                server.Stop();
 
                 //now you can send the first chuck to the Slave i.e. the client
 
-            
+
         }
     }
 }
